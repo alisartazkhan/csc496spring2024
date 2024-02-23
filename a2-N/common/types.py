@@ -1,4 +1,4 @@
-from typing import Hashable, NamedTuple, Callable
+from typing import Hashable, NamedTuple, Callable, Tuple, Union
 
 
 class Ballot(NamedTuple):
@@ -8,7 +8,7 @@ class Ballot(NamedTuple):
 
 # first element is the winner,
 # second element is True if there were no ties during the selection process
-Result = tuple[Hashable | None, bool]
+Result = Tuple[Hashable | None, bool]
 
 
 class Election(NamedTuple):

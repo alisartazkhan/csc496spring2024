@@ -1,0 +1,2 @@
+python3 a2-N/river.py --elections tests/elections.json
+python3 a2-N/river.py --elections tests/elections.json --check > output2.txt
