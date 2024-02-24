@@ -61,18 +61,18 @@ name: str = "irv"
 
 
 def main() -> None:
-    # shared_main("irv", scheme)
+    shared_main("irv", scheme)
     # ballot1 = Ballot((1,2), 2)
     # ballot2 = Ballot((2,0), 0)
     # ballot3 = Ballot((2,1), 11)
 
-    ballots = [   Ballot(ranking=(1, 2), tally=6),
-    Ballot(ranking=(2, 1), tally=8),
-    Ballot(ranking=(4, 5), tally=8),
-    Ballot(ranking=(0, 5), tally=6),
-    Ballot(ranking=(1, 3), tally=13)]
-    result, no_ties = irv(ballots)
-    print(f"Winner: {result}, No ties: {no_ties}")
+    # ballots = [   Ballot(ranking=(1, 2), tally=6),
+    # Ballot(ranking=(2, 1), tally=8),
+    # Ballot(ranking=(4, 5), tally=8),
+    # Ballot(ranking=(0, 5), tally=6),
+    # Ballot(ranking=(1, 3), tally=13)]
+    # result, no_ties = irv(ballots)
+    # print(f"Winner: {result}, No ties: {no_ties}")
 
 
 if __name__ == "__main__":

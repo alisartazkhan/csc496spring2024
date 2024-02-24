@@ -20,10 +20,10 @@ class Node:
     
 
     def add_child(self, child: 'Node') -> Optional['Node']:
-        # print(f"\n\nADDING CHILD: {self.value} -> {child.value}")
+        # # print(f"\n\nADDING CHILD: {self.value} -> {child.value}")
         # Check if the child node already has a parent
         if child.parent is not None:
-            # print("Error: Child node has multiple parents.")
+            # # print("Error: Child node has multiple parents.")
             return None
 
         # Create the child node and set its parent
@@ -37,13 +37,13 @@ class Node:
         while len(q) != 0:
             current_node = q.pop(0)
             if current_node.value in visited:
-                # print("ERROR: Creating a cycle in the graph.")
+                # # print("ERROR: Creating a cycle in the graph.")
                 child.parent = None
                 self.next.remove(child)
                 return None
 
             visited.append(current_node.value)
-            # print("CURRENT: ", current_node.value, "VISITED: ", visited)
+            # # print("CURRENT: ", current_node.value, "VISITED: ", visited)
 
             q.extend(current_node.next)
 
@@ -53,6 +53,7 @@ class Node:
 
 
 def river(ballots: List[Ballot]) -> Result:
+    return -1, False
     candidates: set[Hashable] = set(candidate for ballot in ballots for candidate in ballot.ranking)
     matrix: Dict[Hashable, Dict[Hashable, int]] = {c1: {c2: 0 for c2 in candidates if c1 != c2} for c1 in candidates}
     pairwise_matrix: Dict[Hashable, Dict[Hashable, int]] = {c1: {c2: 0 for c2 in candidates if c1 != c2} for c1 in candidates}
@@ -66,19 +67,19 @@ def river(ballots: List[Ballot]) -> Result:
                 matrix[candidate_a][candidate_b] += ballot.tally
                 candidates_used.add(candidate_b)
         missing_cadidates: set[Hashable] = candidates ^ candidates_used
-        # print("MISSING CANDIDATES: ", missing_cadidates)
+        # # print("MISSING CANDIDATES: ", missing_cadidates)
         for c in candidates_used:
             for c2 in missing_cadidates:
                 matrix[c][c2] += ballot.tally
 
-    print("PAIRWISE PREF: ", matrix)
+    # print("PAIRWISE PREF: ", matrix)
 
     #  pairwise matrix
     for candidate, dict1 in matrix.items():
         for candidate2, win_by in dict1.items():
             pairwise_matrix[candidate][candidate2] =  dict1[candidate2] - matrix[candidate2][candidate]
 
-    print("PAIRWISE MATRIX: ", pairwise_matrix)
+    # print("PAIRWISE MATRIX: ", pairwise_matrix)
     # Flatten the nested dictionary values
     count: int = 0
     all_values = [(key1, key2, value) for key1, inner_dict in pairwise_matrix.items() for key2, value in inner_dict.items()]
@@ -89,10 +90,10 @@ def river(ballots: List[Ballot]) -> Result:
 
         if max_value < 0:
             break
-        print(all_values)
+        # print(all_values)
         # Find all keys associated with the maximum value
         max_keys = [(key1, key2, value) for key1, key2, value in all_values if value == max_value]
-        print(max_keys)
+        # print(max_keys)
         if len(max_keys) > 1:
             return "<AMBIGUOUS>", True
 
@@ -103,7 +104,7 @@ def river(ballots: List[Ballot]) -> Result:
         if child not in nodes:
             nodes[child] = Node(child)
         nodes[parent].add_child(nodes[child])
-        # print(max_keys)
+        # # print(max_keys)
 
 
         # Remove processed keys from all_values
@@ -113,13 +114,13 @@ def river(ballots: List[Ballot]) -> Result:
     for val, node in nodes.items():
         winner: Node = find_winner(node)
         break
-    # print("ALL VALUES: ", all_values)
-    # print("MAX VALUES: ", max_keys)
+    # # print("ALL VALUES: ", all_values)
+    # # print("MAX VALUES: ", max_keys)
     return winner.value, True
 
 def find_winner(node: Node) -> Node:
     cur: Node = node
-    # print(cur)
+    # # print(cur)
 
     while cur.parent is not None:
         cur = cur.parent
@@ -131,12 +132,12 @@ name: str = "river"
 
 
 def main() -> None:
-    # shared_main(name, scheme)
-    ballots = [   Ballot(ranking=(1, 0), tally=3),
-    Ballot(ranking=(1, 2), tally=8),
-    Ballot(ranking=(2, 1), tally=2)]
-    result, no_ties = river(ballots)
-    print(f"Winner: {result}, No ties: {no_ties}")
+    shared_main(name, scheme)
+    # ballots = [   Ballot(ranking=(1, 0), tally=3),
+    # Ballot(ranking=(1, 2), tally=8),
+    # Ballot(ranking=(2, 1), tally=2)]
+    # result, no_ties = river(ballots)
+    # # print(f"Winner: {result}, No ties: {no_ties}")
     # one = Node(1)
     # two = Node(2)
     # three = Node(3)
@@ -144,9 +145,9 @@ def main() -> None:
     # one.add_child(two)
     # two.add_child(three)
     # three.add_child(one)
-    # print(one)
-    # print(two)
-    # print(three)
+    # # print(one)
+    # # print(two)
+    # # print(three)
 
 
 if __name__ == "__main__":

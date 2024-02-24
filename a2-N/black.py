@@ -46,7 +46,7 @@ def black(ballots: List[Ballot]) -> Result:
 
 
 scheme: Scheme = black
-name: str = "Black"
+name: str = "black"
 
 
 def main() -> None:
