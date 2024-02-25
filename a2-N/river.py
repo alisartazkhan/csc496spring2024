@@ -53,7 +53,6 @@ class Node:
 
 
 def river(ballots: List[Ballot]) -> Result:
-    return -1, False
     candidates: set[Hashable] = set(candidate for ballot in ballots for candidate in ballot.ranking)
     matrix: Dict[Hashable, Dict[Hashable, int]] = {c1: {c2: 0 for c2 in candidates if c1 != c2} for c1 in candidates}
     pairwise_matrix: Dict[Hashable, Dict[Hashable, int]] = {c1: {c2: 0 for c2 in candidates if c1 != c2} for c1 in candidates}
