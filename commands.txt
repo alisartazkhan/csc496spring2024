@@ -1,2 +1,2 @@
-python3 a2-N/black.py --elections tests/elections.json
-python3 a2-N/black.py --elections tests/elections.json --check > output.txt
+python3 a2-N/irv.py --elections tests/elections.json
+python3 a2-N/irv.py --elections tests/elections.json --check > output.txt
