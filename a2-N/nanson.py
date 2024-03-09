@@ -4,6 +4,22 @@ from typing import Dict, Hashable, List
 from common.types import Ballot, Result, Scheme
 from common.shared_main import shared_main
 
+# def borda(ballots: list[Ballot], eliminated_candidates: set[Hashable]) -> Result:
+#     size: int = max(len(ballot.ranking) for ballot in ballots)
+#     size: int = 0
+#     for ballot in ballots:
+
+#         for candidate in ballot
+#     points: list[int] = [c for c in range(size - 1, -1, -1)]
+#     scores: Counter[Hashable] = Counter()
+#     for ballot in ballots:
+#         for i, candidate in enumerate(ballot.ranking):
+#             scores[candidate] += points[i] * ballot.tally
+#     max_score: int = max(scores.values())
+#     winners: list[Hashable] = [
+#         candidate for candidate, score in scores.items() if score == max_score
+#     ]
+#     return winners[0], len(winners) == 1
 
 def nanson(ballots: List[Ballot]) -> Result:
     candidates: set[Hashable] = set(candidate for ballot in ballots for candidate in ballot.ranking)
@@ -19,13 +35,21 @@ def nanson(ballots: List[Ballot]) -> Result:
         
         if len(candidates) == 0:
             return None, False
-        size: int = len(candidates)
-
+        # size: int = len(candidates)
+        size: int = 0
+        for ballot in ballots:
+            c = 0
+            for candidate in ballot.ranking:
+                if candidate not in eliminated_candidates:
+                    c += 1
+            if c > size:
+                size = c
+        
         print("CANDIDATES: ", candidates, "SIZE: ", size)
         if len(candidates) == 1:
             return list(candidates)[0], True
 
-        points: list[int] = [c for c in range(size, 0, -1)]
+        points: list[int] = [c for c in range(size-1, -1, -1)]
         print("POINTS: ", points)
 
         scores: Counter[Hashable] = Counter()
@@ -68,14 +92,14 @@ name: str = "nanson"
 
 
 def main() -> None:
-    # shared_main(name, scheme)
+    shared_main(name, scheme)
 
 
-    ballots: List[Ballot] = [Ballot(ranking=(0, 2), tally=8), 
-                             Ballot(ranking=(1, 2), tally=4), 
-                             Ballot(ranking=(2, 0), tally=1)]
-    result, no_ties = nanson(ballots)
-    print(f"Winner: {result}, No ties: {no_ties}")
+    # ballots: List[Ballot] = [Ballot(ranking=(0, 1), tally=8), 
+    #                          Ballot(ranking=(1, 0), tally=0), 
+    #                          Ballot(ranking=(2, 1), tally=5)]
+    # result, no_ties = nanson(ballots)
+    # print(f"Winner: {result}, No ties: {no_ties}")
     # ballots: List[Ballot] = [Ballot(ranking=("W"), tally=5141), 
     # Ballot(ranking=("W", 'A', 'N'), tally=4281),
     # Ballot(ranking=('J'), tally=3925),
@@ -90,13 +114,13 @@ def main() -> None:
     # result, no_ties = nanson(ballots)
     # print(f"Winner: {result}, No ties: {no_ties}")
 
-Expected: 0
-Got: 2
-{ "ballots": [
-{ "count":  8, "ranking": [0, 2] },
-{ "count":  4, "ranking": [1, 2] },
-{ "count":  1, "ranking": [2, 0] }],
-"winners": {"baldwin?": "<AMBIGUOUS>", "black": 0, "borda": 0, "bucklin": 0, "bucklin?": 0, "copeland": 0, "dodgson": 0, "irv": 0, "nanson": 0, "nanson?": 0, "river": "<AMBIGUOUS>", "river?": "<AMBIGUOUS>", "schulze": 0, "smith_irv": 0, "topmost_median_rank": 1} }
+# Expected: 0
+# Got: 2
+# { "ballots": [
+# { "count":  8, "ranking": [0, 2] },
+# { "count":  4, "ranking": [1, 2] },
+# { "count":  1, "ranking": [2, 0] }],
+# "winners": {"baldwin?": "<AMBIGUOUS>", "black": 0, "borda": 0, "bucklin": 0, "bucklin?": 0, "copeland": 0, "dodgson": 0, "irv": 0, "nanson": 0, "nanson?": 0, "river": "<AMBIGUOUS>", "river?": "<AMBIGUOUS>", "schulze": 0, "smith_irv": 0, "topmost_median_rank": 1} }
 
 if __name__ == "__main__":
     main()
