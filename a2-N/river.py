@@ -18,6 +18,36 @@ class Node:
         children_values = [child.value for child in self.next]
         return f"{parent_value} -> {self.value} -> {children_values}"
     
+    def is_valid(self, child: 'Node') -> bool:
+        if child.parent is not None:
+            # # print("Error: Child node has multiple parents.")
+            return False
+
+        # Create the child node and set its parent
+        child.parent = self
+        self.next.append(child)
+
+
+        # # Check for cycles
+        visited: List[Hashable] = []
+        q: List['Node'] = [self]  # Use a queue for BFS
+        while len(q) != 0:
+            current_node = q.pop(0)
+            if current_node.value in visited:
+                # # print("ERROR: Creating a cycle in the graph.")
+                child.parent = None
+                self.next.remove(child)
+                return False
+
+            visited.append(current_node.value)
+            # # print("CURRENT: ", current_node.value, "VISITED: ", visited)
+
+            q.extend(current_node.next)
+
+        child.parent = None
+        self.next.remove(child)
+        return True
+    
 
     def add_child(self, child: 'Node') -> Optional['Node']:
         # # print(f"\n\nADDING CHILD: {self.value} -> {child.value}")
@@ -71,16 +101,15 @@ def river(ballots: List[Ballot]) -> Result:
             for c2 in missing_cadidates:
                 matrix[c][c2] += ballot.tally
 
-    # print("PAIRWISE PREF: ", matrix)
+    print("PAIRWISE PREF: ", matrix)
 
     #  pairwise matrix
     for candidate, dict1 in matrix.items():
         for candidate2, win_by in dict1.items():
             pairwise_matrix[candidate][candidate2] =  dict1[candidate2] - matrix[candidate2][candidate]
 
-    # print("PAIRWISE MATRIX: ", pairwise_matrix)
+    print("PAIRWISE MATRIX: ", pairwise_matrix)
     # Flatten the nested dictionary values
-    count: int = 0
     all_values = [(key1, key2, value) for key1, inner_dict in pairwise_matrix.items() for key2, value in inner_dict.items()]
     nodes: Dict[Hashable, Node] = {}
     while len(all_values) != 0:
@@ -93,16 +122,36 @@ def river(ballots: List[Ballot]) -> Result:
         # Find all keys associated with the maximum value
         max_keys = [(key1, key2, value) for key1, key2, value in all_values if value == max_value]
         # print(max_keys)
-        if len(max_keys) > 1:
-            return "<AMBIGUOUS>", True
 
-        parent: Hashable = max_keys[0][0]
+        
+        can_add: bool = True
+        valid_pairs: List[Tuple] = []
+        for pairings in max_keys:
+            parent: Hashable = pairings[0]
+            if parent not in nodes:
+                nodes[parent] = Node(parent)
+            child: Hashable = pairings[1]
+            if child not in nodes:
+                nodes[child] = Node(child)
+            print(max_keys)
+            if can_add and nodes[parent].is_valid(nodes[child]):
+                valid_pairs.append(pairings)
+                # nodes[parent].add_child(nodes[child])
+                can_add = False
+            elif can_add != True and nodes[parent].is_valid(nodes[child]):
+                return "<AMBIGUOUS>", False 
+        
+        parent = valid_pairs[0][0]
         if parent not in nodes:
             nodes[parent] = Node(parent)
-        child: Hashable = max_keys[0][1]
+        child = valid_pairs[0][1]
         if child not in nodes:
             nodes[child] = Node(child)
+        
         nodes[parent].add_child(nodes[child])
+
+            
+
         # # print(max_keys)
 
 
@@ -132,11 +181,10 @@ name: str = "river"
 
 def main() -> None:
     shared_main(name, scheme)
-    # ballots = [   Ballot(ranking=(1, 0), tally=3),
-    # Ballot(ranking=(1, 2), tally=8),
-    # Ballot(ranking=(2, 1), tally=2)]
+    # ballots = [Ballot(ranking=(0, 2), tally=4),
+    #         Ballot(ranking=(2, 1), tally=9)]
     # result, no_ties = river(ballots)
-    # # print(f"Winner: {result}, No ties: {no_ties}")
+    # print(f"Winner: {result}, No ties: {no_ties}")
     # one = Node(1)
     # two = Node(2)
     # three = Node(3)
