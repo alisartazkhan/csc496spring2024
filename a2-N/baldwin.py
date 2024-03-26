@@ -23,9 +23,13 @@ def borda(ballots: list[Ballot], eliminated_candidates: Set[Hashable]) -> list[H
     points: list[int] = [c for c in range(size - 1, -1, -1)]
     scores: Counter[Hashable] = Counter()
     for ballot in ballots:
+        j = 0
         for i, candidate in enumerate(ballot.ranking):
             if candidate not in eliminated_candidates:
-                scores[candidate] += points[i] * ballot.tally
+                # print(ballots, points)
+                # print(eliminated_candidates, "\n\n")
+                scores[candidate] += points[j] * ballot.tally
+                j += 1
     min_score: int = min(scores.values())
     losers: list[Hashable] = [candidate for candidate, score in scores.items() if score == min_score]
     return losers
@@ -46,16 +50,17 @@ def baldwin(ballots: list[Ballot]) -> Result:
 
     
 
-    return winners[0], True
+    return list(winners)[0], True
 
 scheme: Scheme = baldwin
 name: str = "baldwin"
 
 
 def main() -> None:
-    shared_main(name, scheme)
-    ballots = [  Ballot(ranking=(0, 2), tally=4),
-    Ballot(ranking=(2, 1), tally=9)]
+    # shared_main(name, scheme)
+    ballots = [  Ballot(ranking=(0, 1), tally=8),
+    Ballot(ranking=(1, 0), tally=0),
+    Ballot(ranking=(2, 1), tally=5)]
     result, no_ties = baldwin(ballots)
     print(f"Winner: {result}, No ties: {no_ties}")
 

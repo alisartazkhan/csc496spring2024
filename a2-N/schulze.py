@@ -68,9 +68,9 @@ def schulze(ballots: List[Ballot]) -> Result:
     graph: Dict[Hashable, Dict[Hashable, int]] = {c1: {c2: 0 for c2 in candidates if c1 != c2} for c1 in candidates}
     for c1 in candidates:
         for c2 in candidates:
-            if sum(paths[c2].values()) == 0:
-                losers.add(c2)
-            elif c1 != c2:
+            # if sum(paths[c2].values()) == 0:
+            #     losers.add(c2)
+            if c1 != c2:
                 if paths[c1][c2] > paths[c2][c1]:
                     graph[c1][c2] = paths[c1][c2]
     print("DIRECTED G: ", graph)
@@ -122,7 +122,7 @@ def find_strongest_path(start: Hashable, end: Hashable, graph: Dict[Hashable, Di
 
     for n in graph[start]:
         strength = graph[start][n]
-        if strength == max_edge_strength and n not in visited:
+        if n not in visited:
             new_strength: int = min(min_strength, strength) if min_strength is not None else strength
             path_strength: int = find_strongest_path(n, end, graph, new_strength, visited)
             if path_strength > 0:
